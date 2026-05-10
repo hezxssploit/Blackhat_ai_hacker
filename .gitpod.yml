@@ -1,0 +1,23 @@
+image: python:3.11-slim
+
+ports:
+  - port: 5000
+    onOpen: open-preview
+
+before: |
+  echo "Installing dependencies..."
+  pip install -r requirements.txt
+
+  echo "Installing Ollama..."
+  curl -fsSL https://ollama.com/install.sh | sh
+
+  echo "Pulling Dolphin3-Qwen2.5:3b model..."
+  ollama pull dolphin3-qwen2.5:3b
+
+  echo "Starting Ollama server..."
+  ollama serve &
+  sleep 10
+
+tasks:
+  - name: Start AI Agent
+    command: python app.py
